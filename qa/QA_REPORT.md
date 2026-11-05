@@ -62,10 +62,19 @@ commit `80f8895` — "Fix log: include narration lines (found by cloud browser Q
 - **云端（Lexmount Cloud Browser）**：所有真实网页操作——打开线上站点、点击推进、触发选择支与结局、渲染截图、eval 采集运行时状态（BGM/VOICE/DOM 几何/错误钩子）、绕过缓存复验。
 - **本地**：静态资源可达性抽查（curl）、缺陷根因定位与代码修复、git 提交推送、本报告与证据整理。
 
-## 六、材料清单
+## 六、可复跑脚本版（Node + lexmount SDK）
+
+巡检流程已固化为脚本 `qa/inspector/inspect.mjs`：通过 lexmount SDK 创建云端会话、Playwright `connectOverCDP` 接管，8 项检查全自动执行（含把本次修复的「记录不收旁白」做成回归测试 T8），退出码可接 CI。
+
+- 复跑方式：`npm install && node inspect.mjs`（凭证读本地凭据文件或环境变量，不进代码）
+- 最近一次运行：**8/8 PASS，47.6s**，结果与截图见 `qa/inspector/out/`
+- 脚本在开发中还捕获到一个环境级事实：不同云端区域到 GitHub Pages 的带宽有波动（一次会话 T3 因 mp3 缓冲不足而失败），脚本以 10s 轮询兜底——这正是「实际运行」才会暴露的问题。
+
+## 七、材料清单
 
 - 游戏线上地址与源码仓库（见文首）
 - 本报告：`qa/QA_REPORT.md`
-- 可复现命令序列：`qa/COMMANDS.md`
+- 可复现命令序列：`qa/QA_COMMANDS.md`
+- 可复跑巡检脚本与最近运行结果：`qa/inspector/`（`inspect.mjs` + `out/RESULTS.md` + 截图）
 - 证据截图 11 张：`qa/evidence/`
 - 云端会话（含全程录屏）：session_4f946658-0b78-4300-ae94-a96d476662a4（回看需 Lexmount 账号）

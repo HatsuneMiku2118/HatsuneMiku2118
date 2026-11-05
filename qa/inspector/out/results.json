@@ -1,0 +1,60 @@
+{
+  "base": "https://hatsunemiku2118.github.io/HatsuneMiku2118",
+  "session_id": "session_200f9cb9-f48a-4363-a70a-f3554903af6b",
+  "region": "nanjing-1",
+  "inspect_url": "https://browser.lexmount.cn/browser_dev/index.html?session_id=session_200f9cb9-f48a-4363-a70a-f3554903af6b#api_host=api.lexmount.cn",
+  "at": "2026-11-05T04:50:41.164Z",
+  "duration_ms": 47612,
+  "passed": 8,
+  "failed": 0,
+  "results": [
+    {
+      "name": "T1 标题页加载",
+      "status": "PASS",
+      "detail": "titleScreen.on 就绪",
+      "ms": 2444
+    },
+    {
+      "name": "T3 BGM 播放（calm）",
+      "status": "PASS",
+      "detail": "calm 0.6s → 1.6s, vol=0.55",
+      "ms": 6662
+    },
+    {
+      "name": "T4 配音 wav 加载",
+      "status": "PASS",
+      "detail": "c1_room_12.wav",
+      "ms": 6894
+    },
+    {
+      "name": "T5 烟花三选一",
+      "status": "PASS",
+      "detail": "3 个选项",
+      "ms": 1571
+    },
+    {
+      "name": "T6 结局可达 ×3",
+      "status": "PASS",
+      "detail": "END 01, END 02, END 03",
+      "ms": 14134
+    },
+    {
+      "name": "T7 split/wave 版式",
+      "status": "PASS",
+      "detail": "split(charL=26) + wave",
+      "ms": 4972
+    },
+    {
+      "name": "T8 记录含旁白（回归）",
+      "status": "PASS",
+      "detail": "5 条",
+      "ms": 6894
+    },
+    {
+      "name": "T9 零资源/JS 错误",
+      "status": "PASS",
+      "detail": "0 错误",
+      "ms": 101
+    }
+  ]
+}
