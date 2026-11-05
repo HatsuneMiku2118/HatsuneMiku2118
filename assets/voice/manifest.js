@@ -1,0 +1,2 @@
+/* 由 tts_voicevox.py 生成，不要手改 */
+window.VOICE_FILES = ["c1_class_12", "c1_class_7", "c1_road_13", "c1_road_9", "c1_room_12", "c1_room_14", "c2_roof_14", "c2_roof_16", "c2_roof_8", "c2_shop_10", "c2_shop_12", "c2_shop_17", "c2_shop_35", "c3_rain_13", "c3_rain_18", "c3_rain_20", "c3_rain_23", "c3_rain_25", "c4_confess_10", "c4_confess_5", "c4_confess_8", "c4_festival_10", "c4_festival_18", "c4_fireworks_11", "c4_fireworks_6", "c4_fireworks_7", "c4_foam_5", "c4_wait_10", "c4_wait_5"];

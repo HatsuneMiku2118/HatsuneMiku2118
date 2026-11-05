@@ -1,0 +1,179 @@
+/* ==========================================================
+   ui-variants.css —— 6 种版式 + 章节主题令牌
+   依赖：galgame-builder 骨架的 DOM（#stage / #dialogue / .textBox /
+        #textBody / .namePlate / #charL / #charR / #choices）
+   用法：给 #stage 加 data-ui / data-theme
+        <div id="stage" data-ui="box" data-theme="ch1">
+        引擎里：stage.dataset.ui = 'cine'
+   ========================================================== */
+
+/* ---------- 主题令牌（章节换肤只改这几个变量） ---------- */
+#stage{
+  --ui-accent:#e8c88a;
+  --ui-panel:rgba(8,10,18,.86);
+  --ui-ink:#f3eee4;
+  --ui-dim:rgba(243,238,228,.55);
+}
+#stage[data-theme="warm"]{ --ui-accent:#f0a468; --ui-panel:rgba(20,12,8,.88); --ui-ink:#fdf2e4; }
+#stage[data-theme="cold"]{ --ui-accent:#8fd8e8; --ui-panel:rgba(6,12,20,.88); --ui-ink:#eaf6fa; }
+#stage[data-theme="void"]{ --ui-accent:#9a9aa8; --ui-panel:rgba(4,4,6,.93); --ui-ink:#dcdce4; --ui-dim:rgba(220,220,228,.45); }
+
+/* 全局：字色跟随主题 */
+#stage[data-ui] #textBody{ color:var(--ui-ink); }
+#stage[data-ui] .namePlate{ border-color:var(--ui-accent); }
+
+/* ==========================================================
+   01 · box —— 标准对话框（默认，保持骨架原样，只做微调）
+   ========================================================== */
+#stage[data-ui="box"] .textBox{
+  background:linear-gradient(180deg,rgba(12,15,26,.82),var(--ui-panel));
+}
+
+/* ==========================================================
+   02 · wide —— 全宽旁白：没有对话框，文字压在画面上
+   用在：叙述、时间流逝、景物描写
+   ========================================================== */
+#stage[data-ui="wide"] .textBox{
+  background:none; border:none; box-shadow:none; backdrop-filter:none;
+  min-height:auto; padding:0;
+  width:74%; max-width:900px; margin:0 auto; border-radius:0;
+}
+#stage[data-ui="wide"] #dialogue{ padding:0 60px 74px; }
+#stage[data-ui="wide"] #textBody{
+  font-family:var(--serif,serif);
+  font-size:23px; line-height:2.4; letter-spacing:.16em;
+  text-shadow:0 2px 18px rgba(0,0,0,.95), 0 0 40px rgba(0,0,0,.7);
+}
+#stage[data-ui="wide"] .namePlate{
+  background:none; border:none; padding:0 0 14px;
+  font-size:12px; letter-spacing:.4em; color:var(--ui-accent);
+  opacity:.9;
+}
+#stage[data-ui="wide"] .nextDot{ right:60px; bottom:44px; }
+/* 旁白时立绘后撤，别抢字 */
+#stage[data-ui="wide"] .charSlot{ filter:saturate(.82) brightness(.78); }
+
+/* ==========================================================
+   03 · split —— 侧栏档案：左立绘特写，右竖排文字面板
+   用在：人物独白、设定说明、回忆
+   ========================================================== */
+#stage[data-ui="split"] #dialogue{
+  inset:0; padding:0; pointer-events:none;
+}
+#stage[data-ui="split"] .namePlate{
+  position:absolute; right:46px; left:auto; top:114px; width:40%;
+  box-sizing:border-box; padding:0 0 0 34px;
+  background:none; border:none; border-left:2px solid var(--ui-accent);
+  height:auto; z-index:2;
+}
+#stage[data-ui="split"] .textBox{
+  position:absolute; right:46px; top:96px; bottom:96px; left:auto;
+  width:40%; max-width:none;
+  background:var(--ui-panel);
+  border:1px solid rgba(255,255,255,.10);
+  border-left:2px solid var(--ui-accent);
+  border-radius:4px; backdrop-filter:blur(14px);
+  padding:86px 34px 38px; min-height:0;
+  display:flex; align-items:flex-start;
+  box-shadow:-24px 0 60px rgba(0,0,0,.45);
+}
+#stage[data-ui="split"] #textBody{
+  font-size:17px; line-height:2.15; letter-spacing:.1em;
+  text-shadow:none;
+}
+#stage[data-ui="split"] .nextDot{ right:24px; bottom:20px; }
+/* 立绘移到左侧并放大，形成"特写" */
+#stage[data-ui="split"] .charSlot{ left:14% !important; right:auto !important; height:88%; bottom:0; }
+#stage[data-ui="split"] .charSlot.solo{ left:26% !important; }
+#stage[data-ui="split"] #charR{ display:none; }
+
+/* ==========================================================
+   04 · wave —— 无立绘·声音：电话 / 无线电 / 对讲机
+   用在：隔空对话、广播、录音
+   ========================================================== */
+#stage[data-ui="wave"] #charWrap,
+#stage[data-ui="wave"] #cgLayer{ display:none; }
+#stage[data-ui="wave"] #bgWrap{ filter:blur(3px) brightness(.5); }
+#stage[data-ui="wave"]::before{
+  content:""; position:absolute; left:50%; top:34%; width:9px; height:9px;
+  margin:-4.5px 0 0 -4.5px; border-radius:50%;
+  background:var(--ui-accent); box-shadow:0 0 26px var(--ui-accent);
+  z-index:6; pointer-events:none;
+  animation:waveDot 2.2s ease-in-out infinite;
+}
+#stage[data-ui="wave"]::after{
+  content:""; position:absolute; left:50%; top:34%; width:130px; height:130px;
+  margin:-65px 0 0 -65px; border-radius:50%;
+  border:1px solid var(--ui-accent); opacity:.6;
+  z-index:6; pointer-events:none;
+  animation:waveRing 2.2s ease-out infinite;
+}
+@keyframes waveRing{
+  0%{ transform:scale(.35); opacity:.85; }
+  70%{ transform:scale(1.75); opacity:0; }
+  100%{ transform:scale(1.75); opacity:0; }
+}
+@keyframes waveDot{
+  0%,100%{ transform:scale(1); opacity:.85; }
+  50%{ transform:scale(1.35); opacity:1; }
+}
+#stage[data-ui="wave"] .textBox{
+  background:none; border:none; box-shadow:none; backdrop-filter:none;
+  min-height:auto; padding:0; width:70%; margin:0 auto;
+}
+#stage[data-ui="wave"] #dialogue{ padding:0 60px 78px; }
+#stage[data-ui="wave"] #textBody{
+  font-size:19px; line-height:2.1; letter-spacing:.16em; text-align:center;
+  text-shadow:0 2px 16px rgba(0,0,0,.95);
+}
+#stage[data-ui="wave"] .namePlate{
+  background:none; border:none; justify-content:center;
+  font-size:11px; letter-spacing:.5em; color:var(--ui-accent); opacity:.8;
+}
+
+/* ==========================================================
+   05 · cine —— CG 全血：字幕压到最短
+   用在：情绪最高点、CG 演出
+   ========================================================== */
+#stage[data-ui="cine"] #charWrap{ display:none; }
+#stage[data-ui="cine"] .textBox{
+  background:linear-gradient(180deg,transparent,rgba(0,0,0,.55));
+  border:none; box-shadow:none; backdrop-filter:none;
+  min-height:auto; padding:26px 0 6px; border-radius:0;
+}
+#stage[data-ui="cine"] #dialogue{ padding:0 90px 46px; }
+#stage[data-ui="cine"] #textBody{
+  font-family:var(--serif,serif);
+  font-size:20px; line-height:2; letter-spacing:.18em; text-align:center;
+  text-shadow:0 2px 20px rgba(0,0,0,1), 0 0 46px rgba(0,0,0,.8);
+}
+#stage[data-ui="cine"] .namePlate{
+  justify-content:center; background:none; border:none;
+  font-size:11px; letter-spacing:.45em; color:var(--ui-accent); opacity:.75;
+  padding-bottom:8px;
+}
+#stage[data-ui="cine"] .nextDot{ right:50%; margin-right:-6px; bottom:22px; }
+/* CG 本身推镜稍慢，衬托"停顿" */
+#stage[data-ui="cine"] #cgLayer img{ animation:cinePush 14s ease-out forwards; }
+@keyframes cinePush{ from{ transform:scale(1.02); } to{ transform:scale(1.09); } }
+
+/* ==========================================================
+   06 · choice —— 分歧：卡片错峰入场
+   ========================================================== */
+#stage[data-ui="choice"] #choices .choice{
+  animation:choiceIn .42s cubic-bezier(.2,.8,.2,1) both;
+}
+#stage[data-ui="choice"] #choices .choice:nth-child(1){ animation-delay:.04s; }
+#stage[data-ui="choice"] #choices .choice:nth-child(2){ animation-delay:.12s; }
+#stage[data-ui="choice"] #choices .choice:nth-child(3){ animation-delay:.20s; }
+#stage[data-ui="choice"] #choices .choice:nth-child(4){ animation-delay:.28s; }
+@keyframes choiceIn{
+  from{ opacity:0; transform:translateX(-14px); }
+  to{ opacity:1; transform:none; }
+}
+
+/* ==========================================================
+   转场（可选增强）：切版式时加一层柔化，避免硬跳
+   ========================================================== */
+#stage[data-ui] #dialogue{ transition:opacity .28s ease, transform .28s ease; }
+#stage.ui-switching #dialogue{ opacity:0; transform:translateY(6px); }

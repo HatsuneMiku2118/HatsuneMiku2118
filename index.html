@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>放課後ソーダ / 放学后的汽水</title>
+<link rel="stylesheet" href="css/ui-variants.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div id="viewport">
+  <div id="stage" data-ui="box" data-theme="ch1">
+
+    <div id="bgWrap">
+      <img class="bg" id="bgA" alt="" />
+      <img class="bg" id="bgB" alt="" />
+    </div>
+
+    <div id="cgLayer"><img id="cgImg" alt="" /></div>
+
+    <div id="charWrap">
+      <div class="charSlot" id="charL"><img alt="" /></div>
+      <div class="charSlot" id="charR"><img alt="" /></div>
+    </div>
+
+    <div id="dialogue">
+      <div class="namePlate" id="namePlate"><span id="nameText"></span></div>
+      <div class="textBox">
+        <div id="textBody"></div>
+        <div class="nextDot" id="nextDot"></div>
+      </div>
+    </div>
+
+    <div id="choices"></div>
+
+    <div id="hud">
+      <button class="hudBtn" id="btnLog" type="button">记录</button>
+      <button class="hudBtn" id="btnCfg" type="button">设置</button>
+    </div>
+
+    <div id="fadeLayer"></div>
+
+    <!-- 章节卡 -->
+    <div id="chapterCard" class="overlay">
+      <div class="chInner">
+        <div class="chNo" id="chNo"></div>
+        <div class="chTitle" id="chTitle"></div>
+        <div class="chSub" id="chSub"></div>
+        <div class="chHint">点击继续</div>
+      </div>
+    </div>
+
+    <!-- 标题页 -->
+    <div id="titleScreen" class="overlay">
+      <div class="titleArt">
+        <div class="titleJp">放課後ソーダ</div>
+        <div class="titleCn">放学后的汽水</div>
+        <div class="titleLine"></div>
+        <div class="titleTag">十一年了。这条路上，一直有她。</div>
+      </div>
+      <div class="titleMenu">
+        <button class="titleBtn" id="btnStart" type="button">开始这个夏天</button>
+        <button class="titleBtn ghost" id="btnContinue" type="button">继续</button>
+        <button class="titleBtn ghost" id="btnTitleCfg" type="button">设置 / 版权</button>
+      </div>
+      <div class="titleFoot">
+        <span id="endingsCount">结局 0 / 3</span>
+        <span class="sep">·</span>
+        <span>音声：VOICEVOX:四国めたん</span>
+        <span class="sep">·</span>
+        <span>BGM：本地占位音轨，可替换</span>
+      </div>
+    </div>
+
+    <!-- 记录 -->
+    <div id="panelLog" class="panel overlay">
+      <div class="panelHead">
+        <span>记录</span>
+        <button class="xBtn" data-close="panelLog" type="button">×</button>
+      </div>
+      <div class="logBody" id="logBody"></div>
+    </div>
+
+    <!-- 设置 -->
+    <div id="panelCfg" class="panel overlay">
+      <div class="panelHead">
+        <span>设置</span>
+        <button class="xBtn" data-close="panelCfg" type="button">×</button>
+      </div>
+      <div class="cfgBody">
+        <label class="cfgRow">
+          <span>音乐</span>
+          <input type="range" id="cfgBgm" min="0" max="100" value="55" />
+          <b id="valBgm">55</b>
+        </label>
+        <label class="cfgRow">
+          <span>语音</span>
+          <input type="range" id="cfgVoice" min="0" max="100" value="95" />
+          <b id="valVoice">95</b>
+        </label>
+        <label class="cfgRow switch">
+          <span>日语配音</span>
+          <input type="checkbox" id="cfgVoiceOn" checked />
+        </label>
+        <label class="cfgRow">
+          <span>文字速度</span>
+          <select id="cfgSpeed">
+            <option value="1">慢</option>
+            <option value="2" selected>标准</option>
+            <option value="4">快</option>
+            <option value="99">瞬时</option>
+          </select>
+        </label>
+        <div class="cfgNote" id="cfgVoiceNote"></div>
+        <div class="cfgCredits">
+          <div class="crHead">版权 / 署名</div>
+          <p>音声：VOICEVOX:四国めたん（小春）。VOICEVOX 强制署名，正式发布时请保留本行。</p>
+          <p>BGM：本仓库内为程序合成的占位音轨，仅用于开发。发布时请替换为 DOVA-SYNDROME（免署名可商用）等授权曲目，并在此页列出曲名与作者。</p>
+          <p>本作为同人练习作品，剧情、角色、地名均为虚构。</p>
+        </div>
+        <div class="cfgEndings" id="cfgEndings"></div>
+        <button class="titleBtn ghost small" id="btnBackTitle" type="button">返回标题</button>
+      </div>
+    </div>
+
+    <!-- 结局 -->
+    <div id="endingScreen" class="overlay">
+      <div class="endInner">
+        <div class="endNo" id="endNo"></div>
+        <div class="endTitle" id="endTitle"></div>
+        <div class="endText" id="endText"></div>
+        <div class="endFoot">
+          <button class="titleBtn" id="btnEndBack" type="button">回到标题</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="assets/voice/manifest.js"></script>
+<script src="js/bgm.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/data.js"></script>
+<script src="js/story_01.js"></script>
+<script src="js/story_02.js"></script>
+<script src="js/story_03.js"></script>
+<script src="js/story_04.js"></script>
+<script src="js/engine.js"></script>
+</body>
+</html>

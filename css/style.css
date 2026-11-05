@@ -1,0 +1,343 @@
+/* ==========================================================
+   style.css —— 骨架（1280×720 固定舞台）
+   版式规则在 ui-variants.css 里，本文件只负责基础结构与外壳
+   ========================================================== */
+
+* { box-sizing: border-box; }
+
+html, body{
+  margin:0; padding:0; width:100%; height:100%;
+  background:#05060a; overflow:hidden;
+  font-family:"Noto Sans SC","Yu Gothic","Hiragino Sans","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+#viewport{ position:fixed; inset:0; overflow:hidden; background:#05060a; }
+
+#stage{
+  position:absolute; left:50%; top:50%;
+  width:1280px; height:720px;
+  transform:translate(-50%,-50%);
+  transform-origin:center center;
+  overflow:hidden;
+  background:#05060a;
+  cursor:pointer;
+  user-select:none;
+  --serif:"Noto Serif SC","Source Han Serif SC","Songti SC","Yu Mincho","Hiragino Mincho ProN",serif;
+  --ui-accent:#e8c88a;
+  --ui-panel:rgba(8,10,18,.86);
+  --ui-ink:#f3eee4;
+  --ui-dim:rgba(243,238,228,.55);
+}
+
+/* ---------- 背景 ---------- */
+#bgWrap{ position:absolute; inset:0; z-index:1; background:#05060a; }
+#bgWrap .bg{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; opacity:0; transition:opacity .7s ease;
+  will-change:opacity;
+}
+#bgWrap .bg.on{ opacity:1; }
+#bgWrap::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(120% 90% at 50% 42%, transparent 42%, rgba(0,0,0,.42) 100%),
+    linear-gradient(180deg, rgba(0,0,0,.22), transparent 28%, transparent 68%, rgba(0,0,0,.5));
+}
+
+/* ---------- CG ---------- */
+#cgLayer{
+  position:absolute; inset:0; z-index:5; opacity:0;
+  transition:opacity .8s ease; pointer-events:none;
+}
+#cgLayer.on{ opacity:1; }
+#cgLayer img{ width:100%; height:100%; object-fit:cover; }
+
+/* ---------- 立绘 ---------- */
+#charWrap{ position:absolute; inset:0; z-index:8; pointer-events:none; }
+.charSlot{
+  position:absolute; bottom:0; width:40%; height:94%;
+  display:flex; align-items:flex-end; justify-content:center;
+  transition:left .45s cubic-bezier(.2,.7,.2,1), right .45s cubic-bezier(.2,.7,.2,1),
+             opacity .45s ease, transform .45s ease, filter .45s ease;
+  opacity:0; transform:translateY(16px);
+}
+#charL{ left:3%; }
+#charR{ right:3%; }
+.charSlot.on{ opacity:1; transform:none; }
+.charSlot.off{ opacity:0; transform:translateY(16px); }
+/* 单人出场：居中；必须用 ID 选择器，否则会被上面 #charL / #charR 的 left/right 覆盖 */
+#charL.solo, #charR.solo{ left:50%; right:auto; margin-left:-20%; }
+#stage[data-ui="split"] #charL.solo,
+#stage[data-ui="split"] #charR.solo{
+  left:2% !important; right:auto !important; width:46%; margin-left:0;
+}
+.charSlot img{
+  height:100%; width:auto; max-width:100%;
+  object-fit:contain; object-position:bottom center;
+  filter:drop-shadow(0 10px 34px rgba(0,0,0,.5));
+}
+
+/* ---------- 对话层 ---------- */
+#dialogue{
+  position:absolute; left:0; right:0; bottom:0; z-index:30;
+  padding:0 84px 52px;
+  pointer-events:none;
+}
+#dialogue .textBox{
+  position:relative;
+  min-height:150px;
+  padding:20px 30px 26px;
+  background:linear-gradient(180deg,rgba(12,15,26,.82),var(--ui-panel));
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:6px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 18px 46px rgba(0,0,0,.45);
+  pointer-events:none;
+}
+.namePlate{
+  display:inline-block; margin:0 0 10px 10px;
+  padding:4px 16px 4px 13px;
+  background:rgba(0,0,0,.5);
+  border-left:3px solid var(--ui-accent);
+  font-size:16px; letter-spacing:.14em; color:var(--ui-ink);
+  border-radius:0 3px 3px 0;
+}
+.namePlate.empty{ visibility:hidden; height:0; padding:0; margin:0; border:none; }
+
+#textBody{
+  font-family:var(--serif);
+  font-size:21px; line-height:1.95; letter-spacing:.05em;
+  color:var(--ui-ink);
+  white-space:pre-wrap;
+  text-shadow:0 1px 2px rgba(0,0,0,.5);
+  min-height:2em;
+}
+.nextDot{
+  position:absolute; right:26px; bottom:18px;
+  width:10px; height:10px;
+  border-right:2px solid var(--ui-accent);
+  border-bottom:2px solid var(--ui-accent);
+  transform:rotate(45deg);
+  opacity:0; transition:opacity .2s;
+  animation:dotBob 1.5s ease-in-out infinite;
+}
+.nextDot.on{ opacity:.85; }
+@keyframes dotBob{
+  0%,100%{ margin-bottom:0; } 50%{ margin-bottom:5px; }
+}
+
+/* 立绘色偏 / 场景压暗由引擎加的 stage 类控制 */
+#stage.dim-bg #bgWrap{ filter:brightness(.62) blur(1px); transition:filter .5s; }
+#stage.dim-bg #charWrap{ filter:brightness(.78); transition:filter .5s; }
+
+/* ---------- 选择支 ---------- */
+#choices{
+  position:absolute; left:50%; top:52%; z-index:40;
+  width:660px; transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; gap:14px;
+  opacity:0; pointer-events:none; transition:opacity .3s;
+}
+#choices.on{ opacity:1; pointer-events:auto; }
+#stage[data-ui="choice"] #choices{ top:50%; }
+.choice{
+  position:relative;
+  display:block; width:100%;
+  padding:16px 22px 16px 54px;
+  background:var(--ui-panel);
+  border:1px solid rgba(255,255,255,.14);
+  border-left:3px solid var(--ui-accent);
+  border-radius:4px;
+  color:var(--ui-ink);
+  font-family:var(--serif); font-size:19px; letter-spacing:.06em; line-height:1.5;
+  text-align:left; cursor:pointer;
+  backdrop-filter:blur(10px);
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  transition:transform .18s ease, background .18s ease, border-color .18s ease;
+}
+.choice::before{
+  content:attr(data-idx);
+  position:absolute; left:20px; top:50%; transform:translateY(-50%);
+  font-size:12px; letter-spacing:.2em; color:var(--ui-accent); opacity:.8;
+}
+.choice:hover{
+  transform:translateX(6px);
+  background:rgba(255,255,255,.08);
+  border-color:var(--ui-accent);
+}
+.choice .sub{
+  display:block; margin-top:4px;
+  font-size:13px; letter-spacing:.08em; color:var(--ui-dim);
+  font-family:"Noto Sans SC",sans-serif;
+}
+
+/* ---------- HUD ---------- */
+#hud{
+  position:absolute; right:18px; top:16px; z-index:60;
+  display:flex; gap:8px; pointer-events:auto;
+}
+.hudBtn{
+  padding:6px 12px;
+  background:rgba(0,0,0,.32);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:3px;
+  color:rgba(243,238,228,.7);
+  font-size:12px; letter-spacing:.16em; cursor:pointer;
+  transition:all .2s;
+}
+.hudBtn:hover{ color:#fff; border-color:var(--ui-accent); background:rgba(0,0,0,.6); }
+
+/* ---------- 黑场 ---------- */
+#fadeLayer{
+  position:absolute; inset:0; z-index:70;
+  background:#000; opacity:0; pointer-events:none;
+  transition:opacity .55s ease;
+}
+#fadeLayer.on{ opacity:1; }
+
+/* ---------- 通用覆盖层 ---------- */
+.overlay{
+  position:absolute; inset:0; z-index:100;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none;
+  transition:opacity .4s ease;
+}
+.overlay.on{ opacity:1; pointer-events:auto; }
+
+/* ---------- 标题页 ---------- */
+#titleScreen{
+  background:
+    linear-gradient(180deg, rgba(6,10,22,.42) 0%, rgba(6,10,22,.72) 58%, rgba(4,6,14,.94) 100%),
+    url("../assets/bg/festival_night.jpg") center 45% / cover no-repeat,
+    #05060a;
+  z-index:110;
+}
+.titleArt{ text-align:center; transform:translateY(-14px); }
+.titleJp{
+  font-family:var(--serif);
+  font-size:70px; letter-spacing:.22em; color:#f6efe2;
+  text-shadow:0 4px 40px rgba(0,0,0,.9), 0 0 90px rgba(232,200,138,.25);
+}
+.titleCn{
+  margin-top:12px;
+  font-family:var(--serif); font-size:22px; letter-spacing:.6em;
+  color:var(--ui-accent); opacity:.9;
+}
+.titleLine{
+  width:120px; height:1px; margin:26px auto 20px;
+  background:linear-gradient(90deg,transparent,var(--ui-accent),transparent);
+  opacity:.6;
+}
+.titleTag{
+  font-family:var(--serif); font-size:15px; letter-spacing:.24em;
+  color:rgba(243,238,228,.6);
+}
+.titleMenu{ margin-top:52px; display:flex; flex-direction:column; gap:12px; width:300px; }
+.titleBtn{
+  padding:13px 18px;
+  background:rgba(8,10,18,.6);
+  border:1px solid rgba(232,200,138,.32);
+  border-radius:3px;
+  color:#f3eee4; font-size:15px; letter-spacing:.28em; cursor:pointer;
+  font-family:var(--serif);
+  transition:all .22s ease;
+}
+.titleBtn:hover{ background:rgba(232,200,138,.14); border-color:var(--ui-accent); letter-spacing:.34em; }
+.titleBtn[disabled]{ opacity:.32; cursor:default; }
+.titleBtn[disabled]:hover{ background:rgba(8,10,18,.6); border-color:rgba(232,200,138,.32); letter-spacing:.28em; }
+.titleBtn.ghost{ border-color:rgba(255,255,255,.14); color:rgba(243,238,228,.72); }
+.titleBtn.small{ width:200px; margin:18px auto 0; padding:9px 14px; font-size:13px; }
+.titleFoot{
+  position:absolute; left:0; right:0; bottom:20px; text-align:center;
+  font-size:11px; letter-spacing:.16em; color:rgba(243,238,228,.34);
+}
+.titleFoot .sep{ margin:0 8px; opacity:.4; }
+
+/* ---------- 章节卡 ---------- */
+#chapterCard{
+  background:#000; z-index:105;
+  transition:opacity .6s ease;
+}
+.chInner{ text-align:center; }
+.chNo{ font-size:13px; letter-spacing:.6em; color:var(--ui-accent); opacity:.7; }
+.chTitle{
+  margin-top:18px; font-family:var(--serif); font-size:46px; letter-spacing:.2em; color:#f3eee4;
+  text-shadow:0 0 60px rgba(232,200,138,.28);
+}
+.chSub{ margin-top:16px; font-size:13px; letter-spacing:.4em; color:rgba(243,238,228,.45); }
+.chHint{ margin-top:56px; font-size:11px; letter-spacing:.4em; color:rgba(243,238,228,.28); animation:chPulse 2.4s ease-in-out infinite; }
+@keyframes chPulse{ 0%,100%{opacity:.25;} 50%{opacity:.7;} }
+
+/* ---------- 面板（记录 / 设置） ---------- */
+.panel{ background:rgba(2,3,6,.86); backdrop-filter:blur(6px); z-index:120; }
+.panelHead{
+  width:760px; max-width:88%; display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:14px; padding-bottom:12px;
+  border-bottom:1px solid rgba(255,255,255,.12);
+  font-family:var(--serif); font-size:18px; letter-spacing:.3em; color:var(--ui-accent);
+}
+.xBtn{
+  background:none; border:none; color:rgba(243,238,228,.6);
+  font-size:26px; line-height:1; cursor:pointer; padding:0 4px;
+}
+.xBtn:hover{ color:#fff; }
+.logBody{
+  width:760px; max-width:88%; max-height:520px; overflow-y:auto;
+  padding-right:10px;
+  font-family:var(--serif); font-size:15px; line-height:1.9; color:rgba(243,238,228,.82);
+}
+.logBody p{ margin:0 0 14px; }
+.logBody .who{ color:var(--ui-accent); font-size:12px; letter-spacing:.14em; margin-right:8px; }
+
+.cfgBody{ width:760px; max-width:88%; max-height:560px; overflow-y:auto; padding-right:10px; color:var(--ui-ink); }
+.cfgRow{
+  display:grid; grid-template-columns:120px 1fr 42px; align-items:center; gap:16px;
+  padding:11px 0; border-bottom:1px solid rgba(255,255,255,.07);
+  font-size:14px; letter-spacing:.1em;
+}
+.cfgRow.switch{ grid-template-columns:120px 1fr; }
+.cfgRow select{
+  background:rgba(255,255,255,.06); color:var(--ui-ink);
+  border:1px solid rgba(255,255,255,.16); border-radius:3px; padding:6px 8px;
+}
+.cfgRow input[type="range"]{ width:100%; accent-color:var(--ui-accent); }
+.cfgRow input[type="checkbox"]{ width:18px; height:18px; accent-color:var(--ui-accent); }
+.cfgNote{ margin-top:12px; font-size:12px; line-height:1.8; color:var(--ui-dim); }
+.cfgCredits{
+  margin-top:18px; padding:16px 18px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08); border-radius:4px;
+  font-size:12px; line-height:1.9; color:rgba(243,238,228,.62);
+}
+.cfgCredits .crHead{ font-size:12px; letter-spacing:.3em; color:var(--ui-accent); margin-bottom:8px; }
+.cfgCredits p{ margin:0 0 8px; }
+.cfgEndings{ margin-top:16px; font-size:13px; letter-spacing:.12em; color:var(--ui-dim); }
+
+/* ---------- 结局页 ---------- */
+#endingScreen{
+  background:radial-gradient(70% 70% at 50% 45%, rgba(6,10,20,.86), #000 100%);
+  z-index:130;
+}
+.endInner{ text-align:center; max-width:760px; }
+.endNo{ font-size:12px; letter-spacing:.6em; color:var(--ui-accent); opacity:.7; }
+.endTitle{
+  margin-top:20px; font-family:var(--serif); font-size:40px; letter-spacing:.18em; color:#f3eee4;
+}
+.endText{
+  margin-top:26px; font-family:var(--serif); font-size:16px; line-height:2.2;
+  letter-spacing:.12em; color:rgba(243,238,228,.6);
+}
+.endFoot{ margin-top:46px; }
+
+/* ---------- 窄屏 / 手机 ---------- */
+body.compact #dialogue{ padding:0 34px 30px; }
+body.compact #textBody{ font-size:25px; }
+body.compact .namePlate{ font-size:18px; }
+body.compact #choices{ width:78%; }
+body.compact .choice{ font-size:22px; }
+body.compact #hud .hudBtn{ font-size:15px; padding:8px 12px; }
+
+@media (max-width:900px){
+  .panelHead, .logBody, .cfgBody{ width:88%; }
+  .titleJp{ font-size:56px; }
+}
