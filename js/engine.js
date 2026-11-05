@@ -127,10 +127,9 @@
     namePlate.classList.toggle('empty', !nm);
     if (ch) nameText.style.color = ch.color || '';
 
-    if (ch || st.c) {
-      HIST.push({ name: nm, text: st.x || '' });
-      if (HIST.length > 240) HIST.shift();
-    }
+    /* 云端巡检发现：旁白也必须进记录，否则开场全是 narr 时面板为空 */
+    HIST.push({ name: nm, text: st.x || '' });
+    if (HIST.length > 240) HIST.shift();
 
     const full = st.x || '';
     renderText(full, SET.speed);
